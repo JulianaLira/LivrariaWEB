@@ -2,6 +2,7 @@ using LivrariaAPI.DAO;
 using LivrariaWEB.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,13 @@ namespace LivrariaWEB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ILivroDAO, LivroDAO>();
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
             services.AddDbContext<ApplicationDbContext>(options =>
                options.UseSqlServer(
