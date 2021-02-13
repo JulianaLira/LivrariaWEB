@@ -1,0 +1,153 @@
+﻿@model PagingList<LivroViewModel>
+
+
+@{
+    ViewData["Title"] = "Livros";
+    var controllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    var filtro = ViewBag.Filter;
+}
+<div id="main" class="container-fluid" style="margin-top: 50px">
+    <div id="top" class="row">
+        <div class="col-sm-11">
+            <h2>Livros</h2>
+        </div>
+        <div class="col-sm-1">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#filtroModal">
+                <i class="fa fa-search" aria-hidden="true"> </i>
+            </button>
+        </div>
+    </div> <!-- /#top -->
+
+    <div class="row mt-2">
+        <div class="table-responsive col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="align-items-lg-stretch nowrap">@Html.SortableHeaderFor(p => p.Id)</th>
+                        <th class="align-items-lg-stretch nowrap">@Html.SortableHeaderFor(p => p.Autor)</th>
+                        <th class="align-items-lg-stretch nowrap">@Html.SortableHeaderFor(p => p.Nome)</th>
+                        <th>@Html.SortableHeaderFor(p => p.Data_Publicacao)</th>
+                        <th class="actions">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td> @Html.DisplayFor(modelItem => item.Id)</td>
+                            <td> @Html.DisplayFor(modelItem => item.Autor)</td>
+                            <td> @Html.DisplayFor(modelItem => item.Nome)</td>
+                            <td> @Html.DisplayFor(modelItem => item.Data_Publicacao)</td>
+                            <td class="actions">
+                                <a class="btn btn-success btn-xs" href="view.html">Visualizar</a>
+                                <a class="btn btn-warning btn-xs" href="edit.html">Editar</a>
+                                <a class="btn btn-danger btn-xs" href="#" data-toggle="modal" data-target="#delete-modal">Excluir</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div> <!-- /#list -->
+
+    <nav aria-label="Navegação de página exemplo">
+        <ul class="pagination">
+            @Html.Partial("_Pager", this.Model)
+        </ul>
+    </nav>
+</div> <!-- /#main -->
+<!-- Modal -->
+
+<div id="filtroModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Título -->
+            <div class="modal-header">
+                <h4 class="modal-title">Filtro de Busca</h4>
+                <button class="close" data-dismiss="modal" arial-label="Fechar">
+                    <span arial-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Conteúdo -->
+            <div class="modal-body">
+                <form asp-controller="Livros" asp-action="Index" method="get">
+                    <input hidden name="filter" value="" />
+                    <input hidden name="flagFilter" value="true" />
+
+                    <div class="form-row">
+                        <div class="col">
+                            <input type="text" name="autor" class="form-control" placeholder="Autor">
+                        </div>
+                        <div class="col">
+                            <input type="text" name="nome" class="form-control" placeholder="Nome">
+                        </div>
+                    </div>
+                    <div class="form-row mt-3">
+                        <div class="col">
+                            <input type="number" name="isbn" class="form-control" placeholder="ISBN">
+                        </div>
+                        <div class="col">
+                            <input type="number" name="preco" class="form-control" placeholder="Preço">
+                        </div>
+                    </div>
+                    <div class="form-row mt-3">
+                        <div class="col-6">
+                            <input type="datetime-local" name="datapublicacao" class="form-control" placeholder="Data de Publicação">
+                        </div>
+                    </div>
+                    <div class="row mt-lg-5">
+                        <div class="col-md-12 justify-content-end">
+                            <button type="submit" class="btn btn-warning"><i class="fa fa-search"></i> Buscar</button>
+                            <button type="button" id="limparFiltros" class="btn btn-primary"><i class="fa fa-eraser"></i> Limpar</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalLabel">Excluir Item</h4>
+            </div>
+            <div class="modal-body">
+                Deseja realmente excluir este item?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Sim</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">N&atilde;o</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/lib/jquery/jquery.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+           
+            //limpando os filtros no click
+            $('#limparFiltros').click(function () {
+                $('input[name=autor]').val(null);
+                $('input[name=nome]').val(null);
+                $('input[name=isbn]').val(null);
+                $('input[name=preco]').val(null);
+                $('input[name=datapublicacao]').val(null);
+            });
+            /**/
+
+
+        });
+    </script>
+
+}

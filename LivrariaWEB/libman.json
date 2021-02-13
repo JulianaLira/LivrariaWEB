@@ -21,6 +21,14 @@
     {
       "library": "Chart.js@2.7.3",
       "destination": "wwwroot/js/chart/"
+    },
+    {
+      "library": "bootstrap-datetimepicker@4.17.47",
+      "destination": "wwwroot/js/bootstrap-datetimepicker/"
+    },
+    {
+      "library": "moment.js@2.29.1",
+      "destination": "wwwroot/js/moment/"
     }
 
 
