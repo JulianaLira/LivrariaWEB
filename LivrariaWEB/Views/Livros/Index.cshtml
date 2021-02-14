@@ -40,8 +40,8 @@
                             <td> @Html.DisplayFor(modelItem => item.Data_Publicacao)</td>
                             <td class="actions">
                                 <a class="btn btn-success btn-xs" href="view.html">Visualizar</a>
-                                <a class="btn btn-warning btn-xs" href="edit.html">Editar</a>
-                                <a class="btn btn-danger btn-xs btnExcluir"  data-id="@item.Id">Excluir</a>
+                                <a class="btn btn-warning btn-xs"asp-controller="Livros" asp-action="EditLivro" asp-route-id="@item.Id">Editar</a>
+                                <a class="btn btn-danger btn-xs btnExcluir" data-id="@item.Id">Excluir</a>
                             </td>
                         </tr>
                     }

@@ -4,10 +4,10 @@
     <div class="col-lg-6">
         <div class="card mt-5">
             <div class="card-header">
-                Cadastrar Livro
+                Editar Livro
             </div>
             <div class="card-body">
-                <form method="post" asp-action="AddLivro" enctype="multipart/form-data" id="form-add-tarefa">
+                <form method="post" asp-action="EditLivro" enctype="multipart/form-data" id="form-add-tarefa">
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label asp-for="Autor"></label>
@@ -37,9 +37,19 @@
                         <div class="form-group col-md-6">
                             <label asp-for="Url_Imagem"></label>
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" asp-for="IFormImage" />
+                                <input type="file" id="uploadfile" class="custom-file-input" asp-for="IFormImage" />
                                 <label class="custom-file-label" for="customFile">Choose file</label>
                             </div>
+                        </div>
+                    </div>
+                    @{ string img_src = @Model.Url_Imagem != null ? "https://" + @Context.Request.Host.Value +"/" + @Model.Url_Imagem : null;}
+
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <button type="button" style="background-color: transparent; border: none">
+                                <img id="targetImg" src=@img_src class="rounded" alt="imagem" width="200" height="350">
+                            </button>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Cadastrar</button>
@@ -54,6 +64,35 @@
     <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
     <script type="text/javascript">
+        $(document).ready(function () {
+            $('#uploadfile').change(function () {
+                var File = this.files;
+                if (File && File[0]) {
+                    ReadImage(File[0]);
+                }
+            });
+        });
+
+        //ReadImage
+        var ReadImage = function (file) {
+            var reader = new FileReader;
+            var image = new Image;
+
+            reader.readAsDataURL(file);
+            reader.onload = function (_file) {
+                image.src = _file.target.result;
+                image.onload = function () {
+                    var height = this.height;
+                    var width = this.width;
+                    var type = file.type;
+                    var size = ~~(file.size / 1024) + "KB";
+                    var name = file.name;
+
+
+                    $("#targetImg").attr('src', _file.target.result);
+                }
+            }
+        }
 
         $(document).ready(function () {
             bsCustomFileInput.init()

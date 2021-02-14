@@ -30,7 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Imagens\" />
+    <Folder Include="wwwroot\Imagens\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Imagens\Capa_2021-02-13-19-09-57.png" />
+    <None Include="wwwroot\Imagens\Capa_2021-02-13-19-11-26.png" />
   </ItemGroup>
 
 </Project>

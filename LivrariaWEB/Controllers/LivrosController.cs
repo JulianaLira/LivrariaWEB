@@ -126,7 +126,7 @@ namespace LivrariaWEB.Controllers
                 if (model.IFormImage != null)
                 {
                     SharedClass sharedClass = new SharedClass();
-                    path = await sharedClass.PostFile(model.IFormImage, ("Imagens/"), "Capa_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ssss"));
+                    path = await sharedClass.PostFile(model.IFormImage, ("wwwroot/Imagens/"), "Capa_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ssss"));
                 }
 
                 var livro = new Livro
@@ -136,8 +136,8 @@ namespace LivrariaWEB.Controllers
                     Nome = model.Nome,
                     Preco = model.Preco,
                     Data_Publicacao = model.DataPublicacao != null ? model.DataPublicacao : null,
-                    Url_Imagem = path
-                };
+                    Url_Imagem = path.Replace("wwwroot", string.Empty)
+            };
 
                 await _livroDAO.CreateAsync(livro);
 
@@ -149,6 +149,72 @@ namespace LivrariaWEB.Controllers
             return RedirectToAction("Index");
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> EditLivro(int? id)
+        {
+            if (id != null)
+            {
+                var livro = await _livroDAO.GetByLivroId(id);
+
+                var livroViewModel = new LivroViewModel
+                {
+                    Id = livro.Id,
+                    Autor = livro.Autor,
+                    Nome = livro.Nome,
+                    ISBN = livro.ISBN,
+                    Preco = livro.Preco,
+                    DataPublicacao = livro.Data_Publicacao.HasValue ? livro.Data_Publicacao.Value : null,
+                    Url_Imagem  = livro.Url_Imagem
+                };
+
+                return View(livroViewModel);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditLivro(LivroViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var livro = await _livroDAO.GetByLivroId(model.Id);
+
+                if (model.ISBN != livro.ISBN) 
+                {
+                    var Isbn = await _livroDAO.GetISBN(model.ISBN);
+
+                    if (Isbn != null)
+                    {
+                        Danger("ISBN já cadastrada no sistema, informe outra!", true);
+                        return RedirectToAction("Index");
+                    }
+                }
+
+                string path = null;
+                if (model.IFormImage != null)
+                {
+                    SharedClass sharedClass = new SharedClass();
+                    path = await sharedClass.PostFile(model.IFormImage, ("wwwroot/Imagens/"), "Capa_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ssss"));
+                }
+
+                livro.ISBN = model.ISBN;
+                livro.Autor = model.Autor;
+                livro.Nome = model.Nome;
+                livro.Preco = model.Preco;
+                livro.Data_Publicacao = model.DataPublicacao != null ? model.DataPublicacao : null;
+                livro.Url_Imagem = path.Replace("wwwroot", string.Empty);
+
+                await _livroDAO.UpdateAsync(livro);
+
+                Success("Cadastrado com Sucesso!", true);
+                return RedirectToAction("Index");
+            }
+
+            Danger("Não foi possível salvar os dados. Revise o formulário e tente novamente!", true);
+            return RedirectToAction("Index");
+        }
+        
         public async Task<IActionResult> ExcluirLivro(int? id)
         {
             if (id != null)
@@ -157,6 +223,7 @@ namespace LivrariaWEB.Controllers
                 return PartialView(livro);
             }
 
+            Danger("Não foi possível buscar o livro!", true);
             return RedirectToAction("Index");
         }
 
