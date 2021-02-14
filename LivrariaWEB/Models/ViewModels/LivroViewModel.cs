@@ -28,6 +28,10 @@ namespace LivrariaWEB.Models.ViewModels
 
         [DisplayName("Data de Publicação")]
         public string Data_Publicacao { get; set; }
+
+        public DateTime? DataPublicacao { get; set; }
+
+        [DisplayName("Imagem da Capa")]
         public string Url_Imagem { get; set; }
 
         public IFormFile IFormImage { get; set; }

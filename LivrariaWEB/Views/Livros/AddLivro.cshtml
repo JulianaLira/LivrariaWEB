@@ -1,0 +1,98 @@
+﻿@model LivroViewModel
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card mt-5">
+            <div class="card-header">
+                Cadastrar Livro
+            </div>
+            <div class="card-body">
+                <form method="post" asp-action="AddLivro" enctype="multipart/form-data" id="form-add-tarefa">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Autor"></label>
+                            <input asp-for="Autor" type="text" class="form-control">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Nome"></label>
+                            <input asp-for="Nome" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="ISBN"></label>
+                            <input asp-for="ISBN" type="text" class="form-control">
+                            <span asp-validation-for="ISBN" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Preco"></label>
+                            <input asp-for="Preco" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Data_Publicacao"></label>
+                            <input asp-for="DataPublicacao" type="datetime-local" name="datapublicacao" class="form-control" placeholder="Data de Publicação">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Url_Imagem"></label>
+                            <div class="custom-file">
+                                <input type="file" id="uploadfile" class="custom-file-input" asp-for="IFormImage" />
+                                <label class="custom-file-label" for="customFile">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <button type="button" style="background-color: transparent; border: none">
+                                <img id="targetImg" src="" class="rounded" alt="imagem" width="200" height="350">
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section scripts{
+    <script src="~/lib/jquery/jquery.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#uploadfile').change(function () {
+                var File = this.files;
+                if (File && File[0]) {
+                    ReadImage(File[0]);
+                }
+            });
+        });
+
+        //ReadImage
+        var ReadImage = function (file) {
+            var reader = new FileReader;
+            var image = new Image;
+
+            reader.readAsDataURL(file);
+            reader.onload = function (_file) {
+                image.src = _file.target.result;
+                image.onload = function () {
+                    var height = this.height;
+                    var width = this.width;
+                    var type = file.type;
+                    var size = ~~(file.size / 1024) + "KB";
+                    var name = file.name;
+
+                   
+                    $("#targetImg").attr('src', _file.target.result);
+                }
+            }
+        }
+
+        $(document).ready(function () {
+            bsCustomFileInput.init()
+        })
+    </script>
+}

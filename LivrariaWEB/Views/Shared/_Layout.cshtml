@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - GerenciadorWEB</title>
+    <title>@ViewData["Title"] - Livraria</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
@@ -25,10 +25,12 @@
             <partial name="_CookieConsentPartial" />
 
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                @{ Html.RenderPartial("_Alerts"); }
+
                 @RenderBody()
                 <hr />
                 <footer>
-                    <p>&copy; @DateTime.Now.Year - Gerenciamento WEB</p>
+                    <p>&copy; @DateTime.Now.Year - Livraria </p>
                 </footer>
             </main>
 

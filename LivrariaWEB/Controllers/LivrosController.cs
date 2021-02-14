@@ -1,5 +1,6 @@
 ﻿using LivrariaWEB.DAO;
 using LivrariaWEB.Data;
+using LivrariaWEB.infra;
 using LivrariaWEB.Models;
 using LivrariaWEB.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace LivrariaWEB.Controllers
 {
-    public class LivrosController : Controller
+    public class LivrosController : BaseController
     {
 
         private readonly ILivroDAO _livroDAO;
@@ -67,11 +68,8 @@ namespace LivrariaWEB.Controllers
 
             }
             else
-            {
-
-              
+            {            
                 DateTime? dp = datapublicacao != null ? Convert.ToDateTime(datapublicacao) : (DateTime?)null;
-
                 
                 IQueryable<Livro> listLivro = _livroDAO.ListFiltroCustom(isbn, autor, nome,  preco, dp);
 
@@ -105,5 +103,50 @@ namespace LivrariaWEB.Controllers
             return View(_plLivro);
         }
 
+
+        [HttpGet]
+        public IActionResult AddLivro()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddLivro(LivroViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var Isbn = await _livroDAO.GetISBN(model.ISBN);
+                if (Isbn != null)
+                {
+                    Danger("ISBN já cadastrada no sistema, informe outra!", true);
+                    return RedirectToAction("Index");
+                }
+
+                string path = null;
+                if (model.IFormImage != null)
+                {
+                    SharedClass sharedClass = new SharedClass();
+                    path = await sharedClass.PostFile(model.IFormImage, ("Imagens/"), "Capa_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ssss"));
+                }
+
+                var livro = new Livro
+                {
+                    ISBN = model.ISBN,
+                    Autor = model.Autor,
+                    Nome = model.Nome,
+                    Preco = model.Preco,
+                    Data_Publicacao = model.DataPublicacao != null ? model.DataPublicacao : null,
+                    Url_Imagem = path
+                };
+
+                await _livroDAO.CreateAsync(livro);
+
+                Success("Cadastrado com Sucesso!", true);
+                return RedirectToAction("Index");
+            }
+
+            Danger("Não foi possível salvar os dados. Revise o formulário e tente novamente!", true);
+            return RedirectToAction("Index");
+        }
     }
 }
