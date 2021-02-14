@@ -39,8 +39,8 @@
                             <td> @Html.DisplayFor(modelItem => item.Nome)</td>
                             <td> @Html.DisplayFor(modelItem => item.Data_Publicacao)</td>
                             <td class="actions">
-                                <a class="btn btn-success btn-xs" href="view.html">Visualizar</a>
-                                <a class="btn btn-warning btn-xs"asp-controller="Livros" asp-action="EditLivro" asp-route-id="@item.Id">Editar</a>
+                                <a class="btn btn-success btn-xs btnVisualizar" data-id="@item.Id">Visualizar</a>
+                                <a class="btn btn-warning btn-xs" asp-controller="Livros" asp-action="EditLivro" asp-route-id="@item.Id">Editar</a>
                                 <a class="btn btn-danger btn-xs btnExcluir" data-id="@item.Id">Excluir</a>
                             </td>
                         </tr>
@@ -111,6 +111,27 @@
 </div>
 
 
+<div class="modal fade" id="modalVisualizarLivro" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Título -->
+            <div class="modal-header">
+                <h4 class="modal-title">Excluir Livro</h4>
+                <button class="close" data-dismiss="modal" arial-label="Fechar">
+                    <span arial-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="contentVisualizarLivro">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="modalExcluirLivro" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -134,6 +155,17 @@
     <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript">
 
+
+        //abrir modal de Visualizar
+        $(function () {
+            $(".btnVisualizar").click(function () {
+                var id = $(this).attr("data-id");
+                $("#contentVisualizarLivro").load("/Livros/DetailsLivro/" + id, function () {
+                    $("#modalVisualizarLivro").modal();
+                })
+            });
+        });
+
         //abrir modal de Excluir
         $(function () {
             $(".btnExcluir").click(function () {
@@ -144,7 +176,7 @@
             });
         });
 
-        $(document).ready(function () {          
+        $(document).ready(function () {
             //limpando os filtros no click
             $('#limparFiltros').click(function () {
                 $('input[name=autor]').val(null);

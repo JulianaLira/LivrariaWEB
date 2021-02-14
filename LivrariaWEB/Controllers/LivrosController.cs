@@ -214,6 +214,30 @@ namespace LivrariaWEB.Controllers
             Danger("Não foi possível salvar os dados. Revise o formulário e tente novamente!", true);
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> DetailsLivro(int? id)
+        {
+            if (id != null)
+            {
+                var livro = await _livroDAO.GetByLivroId(id);
+
+                var livroViewModel = new LivroViewModel
+                {
+                    Id = livro.Id,
+                    Autor = livro.Autor,
+                    Nome = livro.Nome,
+                    ISBN = livro.ISBN,
+                    Preco = livro.Preco,
+                    Data_Publicacao = livro.Data_Publicacao.HasValue ? livro.Data_Publicacao.Value.ToString("dd/MM/yyyy") : null,
+                    Url_Imagem = livro.Url_Imagem
+                };
+
+                return View(livroViewModel);
+            }
+            return RedirectToAction("Index");
+        }
+
         
         public async Task<IActionResult> ExcluirLivro(int? id)
         {
