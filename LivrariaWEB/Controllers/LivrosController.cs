@@ -148,5 +148,32 @@ namespace LivrariaWEB.Controllers
             Danger("Não foi possível salvar os dados. Revise o formulário e tente novamente!", true);
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> ExcluirLivro(int? id)
+        {
+            if (id != null)
+            {
+                var livro = await _livroDAO.GetByLivroId(id);
+                return PartialView(livro);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExcluirLivro(LivroViewModel model)
+        {
+            if (model.Id != 0)
+            {
+                var livro = await _livroDAO.GetByLivroId(model.Id);
+                await _livroDAO.Delete(livro);
+
+                Success("Excluido com Sucesso!", true);
+                return RedirectToAction("Index");
+            }
+
+            Danger("Não foi possível excluir o livro.", true);
+            return RedirectToAction("Index");
+        }
     }
 }
