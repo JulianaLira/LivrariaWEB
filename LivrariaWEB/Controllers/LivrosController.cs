@@ -134,8 +134,8 @@ namespace LivrariaWEB.Controllers
                     ISBN = model.ISBN,
                     Autor = model.Autor,
                     Nome = model.Nome,
-                    Preco = model.Preco,
-                    Data_Publicacao = model.DataPublicacao != null ? model.DataPublicacao : null,
+                    Preco = model.Preco != null ? Convert.ToDecimal(model.Preco) : null,
+                Data_Publicacao = model.DataPublicacao != null ? model.DataPublicacao : null,
                     Url_Imagem = path.Replace("wwwroot", string.Empty)
             };
 
@@ -201,9 +201,9 @@ namespace LivrariaWEB.Controllers
                 livro.ISBN = model.ISBN;
                 livro.Autor = model.Autor;
                 livro.Nome = model.Nome;
-                livro.Preco = model.Preco;
+                livro.Preco = model.Preco != null ? Convert.ToDecimal(model.Preco) : null;
                 livro.Data_Publicacao = model.DataPublicacao != null ? model.DataPublicacao : null;
-                livro.Url_Imagem = path.Replace("wwwroot", string.Empty);
+                livro.Url_Imagem = model.IFormImage != null ? path.Replace("wwwroot", string.Empty) : null;
 
                 await _livroDAO.UpdateAsync(livro);
 
